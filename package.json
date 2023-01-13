@@ -1,0 +1,23 @@
+{
+  "name": "babirusa",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./src/main.js",
+  "scripts": {
+    "start": "nodemon ./src/main.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Solaris-PolyHack/babirusa-tg.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Solaris-PolyHack/babirusa-tg/issues"
+  },
+  "homepage": "https://github.com/Solaris-PolyHack/babirusa-tg#readme",
+  "dependencies": {
+    "axios": "^1.2.2",
+    "dotenv": "^16.0.3"
+  }
+}
