@@ -30,7 +30,7 @@ accept_kb = [
   [  
     {
       text: 'Изменить ✏️',
-      callback_data: 'login'
+      callback_data: 'change'
     },
   ]
 ]
@@ -56,6 +56,7 @@ bot.on('callback_query', query => {
   switch (query.data) {
 
     case 'login':
+      current_input = 1;
       bot.sendMessage(query.message.chat.id, 'Проверяем ваш аккаунт, секунду...');
       axios.get(`http://10.66.66.33:2107/log_tg?tg_id=${query.from.id}`)
       .then(res => {
@@ -86,6 +87,54 @@ bot.on('callback_query', query => {
                 }
               });
               current_input = 4;
+              bot.clearTextListeners();
+            };
+          });
+        }
+      })
+      .catch(err => {
+        console.log(err);
+        bot.sendMessage(query.message.chat.id, 'Что-то пошло не так, попробуйте заново! 😢', {
+          reply_markup: {
+            inline_keyboard: start_kb,
+          }
+        });
+      });
+      break;
+
+    case 'change':
+      current_input = 1;
+      bot.sendMessage(query.message.chat.id, 'Проверяем ваш аккаунт, секунду...');
+      axios.get(`http://10.66.66.33:2107/log_tg?tg_id=${query.from.id}`)
+      .then(res => {
+        if (res.data.status === 'ok') {
+          bot.sendMessage(query.message.chat.id, 'Вы вошли в систему! 👍 Для того, чтобы зайти в Babirusa, пришлите код с экрана.', {
+            reply_markup: {
+              inline_keyboard: code_kb,
+            }
+          });
+        } else {
+          bot.sendMessage(query.message.chat.id, 'Чтобы зарегистрироваться, надо указать немного информации о себе. Сначала, введи своё имя:');
+          user.tg_id = query.from.id;
+          bot.onText(/^[?!,.а-яА-ЯёЁ0-9\s]+$/, msg => {
+            if (current_input == 1) {
+              user.name = msg.text;
+              bot.sendMessage(msg.chat.id, `Твоё имя: ${user.name}. Теперь, введи свою фамилию:`);
+              current_input = 2;
+            } else if (current_input == 2) {
+              user.surname = msg.text;
+              bot.sendMessage(msg.chat.id, `Твоя фамилия: ${user.surname}. Теперь, введи свой класс:`);
+              current_input = 3;
+            } else if (current_input == 3) {
+              user.class = msg.text;
+              bot.sendMessage(msg.chat.id, `Твой класс: ${user.class}.`);
+              bot.sendMessage(msg.chat.id, `Ещё раз проверь данные о себе и нажми на кнопку: \n Имя: ${user.name} \n Фамилия: ${user.surname} \n Класс: ${user.class}`, {
+                reply_markup: {
+                  inline_keyboard: accept_kb,
+                }
+              });
+              current_input = 4;
+              bot.clearTextListeners();
             };
           });
         }
