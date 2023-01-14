@@ -184,6 +184,7 @@ bot.on('callback_query', query => {
                   inline_keyboard: code_kb,
                 }
               });
+              bot.clearTextListeners();
             } else {
               bot.sendMessage(msg.chat.id, 'Произошла ошибка при обработке, попробуйте еще раз.', {
                 reply_markup: {
@@ -203,7 +204,6 @@ bot.on('callback_query', query => {
           bot.sendMessage(msg.chat.id, 'Чтобы войти, надо прислать шестизначный код с экрана.');
         };
       });
-      bot.clearTextListeners();
       break;
   
     default:
