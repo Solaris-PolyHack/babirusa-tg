@@ -29,6 +29,15 @@ accept_kb = [
   ]
 ]
 
+code_kb = [
+  [
+    {
+      text: 'Ввести код 🕓',
+      callback_data: 'code'
+    },
+  ]
+]
+
 bot.onText(/\/start/, (msg) => {
   bot.sendMessage(msg.chat.id, "Привет 👋 \n Это Babirusa Bot, он поможет тебе с входом в систему Babirusa! ", {
     reply_markup: {
@@ -42,7 +51,7 @@ bot.on('callback_query', query => {
     case 'reg':
       bot.sendMessage(query.message.chat.id, 'Чтобы зарегистрироваться, надо указать немного информации о себе. Сначала, введи своё имя:');
       user.tg_id = query.from.id;
-      bot.onText(/^[?!,.а-яА-ЯёЁ0-9\s]+$/, (msg) => {
+      bot.onText(/^[?!,.а-яА-ЯёЁ0-9\s]+$/, msg => {
         if (current_input == 1) {
           user.name = msg.text;
           bot.sendMessage(msg.chat.id, `Твоё имя: ${user.name}. Теперь, введи свою фамилию:`);
@@ -66,15 +75,54 @@ bot.on('callback_query', query => {
     
     case 'accept_reg':
       if (current_input == 4) {
-        bot.sendMessage(query.message.chat.id, 'Спасибо за регистрацию! 😊 Для того, чтобы зайти в Babirusa, пришлите код с экрана.');
-        axios.post('http://10.66.66.33:2107/reg', user)
-        .then(res => console.log(res.data))
+        bot.sendMessage(query.message.chat.id, 'Спасибо за регистрацию! 😊 Для того, чтобы зайти в Babirusa, пришлите код с экрана.', {
+          reply_markup: {
+            inline_keyboard: code_kb,
+          }
+        });
+        axios.post('http://10.66.66.33:2107/reg_tg', user)
         .catch(err => console.log(err));
       };
       break;
+
+    case 'code':
+      bot.sendMessage(query.message.chat.id, 'Отправь шестизначный код с сайта https://babirusa.skifry.ru')
+      bot.onText(/[0-9]/, msg => {
+        if (msg.text.length === 6) {
+          bot.sendMessage(msg.chat.id, 'Код проверяется...')
+          axios.post('http://10.66.66.33:2107/code_check', {
+            code: msg.text,
+            tg_id: msg.from.id
+          }).then(res => {
+            if (res.data === 'ok') {
+              bot.sendMessage(msg.chat.id, 'Вы успешно вошли! Проверьте страницу с кодом, но не обновляйте её.', {
+                reply_markup: {
+                  inline_keyboard: code_kb,
+                }
+              });
+            } else {
+              bot.sendMessage(msg.chat.id, 'Произошла ошибка при обработке, попробуйте еще раз.', {
+                reply_markup: {
+                  inline_keyboard: code_kb,
+                }
+              });
+            }
+          }).catch(err => {
+            console.log(err);
+            bot.sendMessage(msg.chat.id, 'Произошла ошибка на стороне сервера, попробуйте еще раз.', {
+              reply_markup: {
+                inline_keyboard: code_kb,
+              }
+            });
+          });
+        } else {
+          bot.sendMessage(msg.chat.id, 'Чтобы войти, надо прислать шестизначный код с экрана.');
+        };
+      });
+      break;
   
     default:
-      bot.sendMessage(query.message.chat.id, 'Произошла ошибка, попробуйте еще раз!')
+      bot.sendMessage(query.message.chat.id, 'Произошла ошибка, попробуйте еще раз!');
       break;
-  }
+  };
 });
