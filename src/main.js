@@ -50,6 +50,7 @@ bot.onText(/\/start/, (msg) => {
       inline_keyboard: start_kb,
     }
   });
+  bot.clearTextListeners();
 });
   
 bot.on('callback_query', query => {
