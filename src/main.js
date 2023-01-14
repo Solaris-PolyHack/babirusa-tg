@@ -109,7 +109,7 @@ bot.on('callback_query', query => {
       axios.get(`http://10.66.66.33:2107/log_tg?tg_id=${query.from.id}`)
       .then(res => {
         if (res.data.status === 'ok') {
-          bot.sendMessage(query.message.chat.id, 'Вы вошли в систему! 👍 Для того, чтобы зайти в Babirusa, пришлите код с экрана.', {
+          bot.sendMessage(query.message.chat.id, 'Вы вошли в систему! 👍 Для того, чтобы зайти в Babirusa, пришлите код с сайта https://babirusa.skifry.ru', {
             reply_markup: {
               inline_keyboard: code_kb,
             }
