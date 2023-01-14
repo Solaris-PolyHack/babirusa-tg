@@ -59,7 +59,7 @@ bot.on('callback_query', query => {
     case 'login':
       current_input = 1;
       bot.sendMessage(query.message.chat.id, 'Проверяем ваш аккаунт, секунду...');
-      axios.get(`http://10.66.66.33:2107/log_tg?tg_id=${query.from.id}`)
+      axios.get(`http://10.66.66.27:2107/log_tg?tg_id=${query.from.id}`)
       .then(res => {
         if (res.data.status === 'ok') {
           bot.sendMessage(query.message.chat.id, 'Вы вошли в систему! 👍 Для того, чтобы зайти в Babirusa, пришлите код с экрана.', {
@@ -106,7 +106,7 @@ bot.on('callback_query', query => {
     case 'change':
       current_input = 1;
       bot.sendMessage(query.message.chat.id, 'Проверяем ваш аккаунт, секунду...');
-      axios.get(`http://10.66.66.33:2107/log_tg?tg_id=${query.from.id}`)
+      axios.get(`http://10.66.66.27:2107/log_tg?tg_id=${query.from.id}`)
       .then(res => {
         if (res.data.status === 'ok') {
           bot.sendMessage(query.message.chat.id, 'Вы вошли в систему! 👍 Для того, чтобы зайти в Babirusa, пришлите код с сайта https://babirusa.skifry.ru', {
@@ -157,7 +157,7 @@ bot.on('callback_query', query => {
             inline_keyboard: code_kb,
           }
         });
-        axios.post('http://10.66.66.33:2107/reg_tg', user)
+        axios.post('http://10.66.66.27:2107/reg_tg', user)
         .catch(err => {
           console.log(err.code);
           bot.sendMessage(query.message.chat.id, 'Что-то пошло не так, попробуйте заново! 😢', {
@@ -174,7 +174,7 @@ bot.on('callback_query', query => {
       bot.onText(/[0-9]/, msg => {
         if (msg.text.length === 6) {
           bot.sendMessage(msg.chat.id, 'Код проверяется...');
-          axios.post('http://10.66.66.33:2107/code_check', {
+          axios.post('http://10.66.66.27:2107/code_check', {
             code: msg.text,
             tg_id: msg.from.id
           }).then(res => {
