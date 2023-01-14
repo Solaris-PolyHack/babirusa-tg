@@ -93,8 +93,8 @@ bot.on('callback_query', query => {
         }
       })
       .catch(err => {
-        console.log(err);
-        bot.sendMessage(query.message.chat.id, 'Что-то пошло не так, попробуйте заново! 😢', {
+        console.log(err.code);
+        bot.sendMessage(query.message.chat.id, 'Что-то пошло не так с сервером, попробуйте заново! 😢', {
           reply_markup: {
             inline_keyboard: start_kb,
           }
@@ -140,7 +140,7 @@ bot.on('callback_query', query => {
         }
       })
       .catch(err => {
-        console.log(err);
+        console.log(err.code);
         bot.sendMessage(query.message.chat.id, 'Что-то пошло не так, попробуйте заново! 😢', {
           reply_markup: {
             inline_keyboard: start_kb,
@@ -158,7 +158,7 @@ bot.on('callback_query', query => {
         });
         axios.post('http://10.66.66.33:2107/reg_tg', user)
         .catch(err => {
-          console.log(err);
+          console.log(err.code);
           bot.sendMessage(query.message.chat.id, 'Что-то пошло не так, попробуйте заново! 😢', {
             reply_markup: {
               inline_keyboard: start_kb,
@@ -191,7 +191,7 @@ bot.on('callback_query', query => {
               });
             }
           }).catch(err => {
-            console.log(err);
+            console.log(err.code);
             bot.sendMessage(msg.chat.id, 'Произошла ошибка на стороне сервера, попробуйте еще раз.', {
               reply_markup: {
                 inline_keyboard: code_kb,
